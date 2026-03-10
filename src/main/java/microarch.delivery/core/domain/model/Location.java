@@ -2,6 +2,8 @@ package microarch.delivery.core.domain.model;
 
 public class Location {
 
+    public static final int MIN_COORD_VALUE = 1;
+    public static final int MAX_COORD_VALUE = 10;
     private final int x;
     private final int y;
 
@@ -11,10 +13,10 @@ public class Location {
     }
 
     public static Location create(int x, int y) {
-        if (x < 1 || x > 10) {
+        if (x < MIN_COORD_VALUE || x > MAX_COORD_VALUE) {
             throw new IllegalArgumentException("Invalid location, x should be between 1 and 10, but got = " + x);
         }
-        if (y < 1 || y > 10) {
+        if (y < MIN_COORD_VALUE || y > MAX_COORD_VALUE) {
             throw new IllegalArgumentException("Invalid location, y should be between 1 and 10, but got = " + y);
         }
 
