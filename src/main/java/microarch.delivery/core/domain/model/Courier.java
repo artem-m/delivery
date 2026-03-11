@@ -36,8 +36,7 @@ public class Courier extends BaseEntity<UUID> {
         var capacity = order.getCapacity();
         for (Assignment assignment : assignments) {
             if (assignment.isBelongsTo(order)) {
-                return UnitResult.failure(Error.of("couriers.order.already.assigned",
-                        "Couriers already has assignment to order=" + order));
+                return UnitResult.failure(Errors.alreadyAssigned(order));
             }
             var addResult = capacity.addTo(assignment.getVolume());
             if (addResult.isFailure()) {
@@ -46,8 +45,7 @@ public class Courier extends BaseEntity<UUID> {
             capacity = addResult.getValue();
         }
         if (capacity.compareTo(maxCapacity) > 0) {
-            return UnitResult.failure(Error.of("couriers.capacity.exceeded",
-                    "Couriers capacity exceeded, can not accept order=" + order));
+            return UnitResult.failure(Errors.capacityExceeded(order));
         }
         var assignResult = Assignment.createFor(order);
         if (assignResult.isFailure()) {
@@ -57,10 +55,17 @@ public class Courier extends BaseEntity<UUID> {
         return UnitResult.success();
     }
 
+    public UnitResult<Error> complete(Order order) {
+        var assignment = assignments.stream().filter(it -> it.isBelongsTo(order)).findFirst().orElse(null);
+        if (assignment == null) {
+            return UnitResult.failure(Errors.canNotCompleteWrongOrder());
+        }
+        return assignment.complete(location);
+    }
+
     public UnitResult<Error> moveTo(Location dst) {
         if (!canMoveTo(dst)) {
-            return UnitResult.failure(Error.of("couriers.invalid.destination",
-                    "Courier can not move to destination location=" + location));
+            return UnitResult.failure(Errors.canNotMoveTo(dst));
         }
         this.location = dst;
         // actualize finished assignments ?
@@ -73,5 +78,23 @@ public class Courier extends BaseEntity<UUID> {
 
     public List<Assignment> getAssignments() {
         return Collections.unmodifiableList(this.assignments);
+    }
+
+    static class Errors {
+        static Error canNotMoveTo(Location dst) {
+            return Error.of("couriers.invalid.destination", "Courier can not move to destination location=" + dst);
+        }
+
+        static Error capacityExceeded(Order order) {
+            return Error.of("couriers.capacity.exceeded", "Couriers capacity exceeded, can not accept order=" + order);
+        }
+
+        static Error alreadyAssigned(Order order) {
+            return Error.of("couriers.order.already.assigned", "Couriers already has assignment to order=" + order);
+        }
+
+        static Error canNotCompleteWrongOrder() {
+            return Error.of("courier.complete.wrong.order", "Can not complete order with no assignment");
+        }
     }
 }
