@@ -1,10 +1,13 @@
-package microarch.delivery.core.domain.model;
+package microarch.delivery.core.domain.model.courier;
 
 import libs.ddd.BaseEntity;
 import libs.errs.Error;
 import libs.errs.Guard;
 import libs.errs.Result;
 import libs.errs.UnitResult;
+import microarch.delivery.core.domain.model.Location;
+import microarch.delivery.core.domain.model.order2.Order;
+import microarch.delivery.core.domain.model.Volume;
 
 import java.util.ArrayList;
 import java.util.Collections;

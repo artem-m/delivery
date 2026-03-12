@@ -1,5 +1,7 @@
 package microarch.delivery.core.domain.model;
 
+import microarch.delivery.core.domain.model.courier.Assignment;
+import microarch.delivery.core.domain.model.order2.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
