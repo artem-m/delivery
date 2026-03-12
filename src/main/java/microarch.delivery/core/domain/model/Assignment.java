@@ -42,11 +42,11 @@ public class Assignment extends BaseEntity<UUID> {
         if (!location.canReach(at, COMPLETION_DISTANCE)) {
             return UnitResult.failure(Errors.tooFarToComplete(this));
         }
-        if (status == Status.Assigned) {
-            status = Status.Completed;
-            return UnitResult.success();
+        if (status != Status.Assigned) {
+            return UnitResult.failure(Errors.alreadyCompleted(this));
         }
-        return UnitResult.failure(Errors.alreadyCompleted(this));
+        status = Status.Completed;
+        return UnitResult.success();
     }
 
     public boolean isBelongsTo(Order order) {
