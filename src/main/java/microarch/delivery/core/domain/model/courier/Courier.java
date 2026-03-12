@@ -6,7 +6,7 @@ import libs.errs.Guard;
 import libs.errs.Result;
 import libs.errs.UnitResult;
 import microarch.delivery.core.domain.model.Location;
-import microarch.delivery.core.domain.model.order2.Order;
+import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.domain.model.Volume;
 
 import java.util.ArrayList;
@@ -16,46 +16,44 @@ import java.util.UUID;
 
 public class Courier extends BaseEntity<UUID> {
     public static final int MAX_STEPS_IN_MOVE = 1;
+    public static final Volume MAX_VOLUME = Volume.create(20);
+    private String name;
     private List<Assignment> assignments = new ArrayList<>();
     private Location location;
-    private Volume maxCapacity;
+    private Volume maxVolume;
 
-    private Courier(Location location, Volume maxCapacity) {
+    private Courier(String name, Location location, Volume maxVolume) {
         super(UUID.randomUUID());
+        this.name = name;
         this.location = location;
-        this.maxCapacity = maxCapacity;
+        this.maxVolume = maxVolume;
     }
 
-    public static Result<Courier, Error> create(Location location, Volume maxCapacity) {
-        Error err = Guard.combine(Guard.againstNull(location, "location"),
-                Guard.againstNull(maxCapacity, "maxCapacity"));
+    public static Result<Courier, Error> create(String name, Location location) {
+        Error err = Guard.combine(Guard.againstNull(location, "location"), Guard.againstNullOrEmpty(name, "name"));
         if (err != null) {
             return Result.failure(err);
         }
-        return Result.success(new Courier(location, maxCapacity));
+        return Result.success(new Courier(name, location, MAX_VOLUME));
     }
 
     public UnitResult<Error> assign(Order order) {
-        var capacity = order.getCapacity();
         for (Assignment assignment : assignments) {
             if (assignment.isBelongsTo(order)) {
                 return UnitResult.failure(Errors.alreadyAssigned(order));
             }
-            var addResult = capacity.addTo(assignment.getVolume());
-            if (addResult.isFailure()) {
-                return UnitResult.failure(addResult.getError());
-            }
-            capacity = addResult.getValue();
         }
-        if (capacity.compareTo(maxCapacity) > 0) {
-            return UnitResult.failure(Errors.capacityExceeded(order));
+        var volumeResult = maxVolume.minus(order.getVolume());
+        if (volumeResult.isFailure()) {
+            return UnitResult.failure(volumeResult.getError());
         }
+        maxVolume = volumeResult.getValue();
         var assignResult = Assignment.createFor(order);
         if (assignResult.isFailure()) {
             return UnitResult.failure(assignResult.getError());
         }
         assignments.add(assignResult.getValue());
-        return UnitResult.success();
+        return order.assign();
     }
 
     public UnitResult<Error> complete(Order order) {
@@ -63,6 +61,7 @@ public class Courier extends BaseEntity<UUID> {
         if (assignment == null) {
             return UnitResult.failure(Errors.canNotCompleteWrongOrder());
         }
+        maxVolume = maxVolume.addTo(order.getVolume()).getValue();
         return assignment.complete(location);
     }
 

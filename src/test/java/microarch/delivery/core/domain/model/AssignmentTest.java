@@ -1,7 +1,7 @@
 package microarch.delivery.core.domain.model;
 
 import microarch.delivery.core.domain.model.courier.Assignment;
-import microarch.delivery.core.domain.model.order2.Order;
+import microarch.delivery.core.domain.model.order.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -31,16 +31,19 @@ class AssignmentTest {
 
     @Test
     public void shouldBelongToOrderCreatedFor() {
-        var order = Order.create(Location.create(3, 3), Volume.create(3)).getValue();
+        var order = Order.create(UUID.randomUUID(), Location.create(3, 3), Volume.create(3)).getValue();
         var assignment = Assignment.createFor(order).getValue();
         assertThat(assignment.isBelongsTo(order)).isTrue();
     }
 
     @Test
     public void shouldNotBelongToOrderNotCreatedFor() {
-        var assignment = Assignment.createFor(Order.create(Location.create(3, 3), Volume.create(3)).getValue())
+        var assignment = Assignment
+                .createFor(Order.create(UUID.randomUUID(), Location.create(3, 3), Volume.create(3)).getValue())
                 .getValue();
-        assertThat(assignment.isBelongsTo(Order.create(Location.create(3, 3), Volume.create(3)).getValue())).isFalse();
+        assertThat(assignment
+                .isBelongsTo(Order.create(UUID.randomUUID(), Location.create(3, 3), Volume.create(3)).getValue()))
+                        .isFalse();
     }
 
     public static Stream<Arguments> invalidAssignmentParams() {

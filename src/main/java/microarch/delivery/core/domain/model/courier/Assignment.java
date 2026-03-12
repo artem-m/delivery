@@ -6,7 +6,7 @@ import libs.errs.Guard;
 import libs.errs.Result;
 import libs.errs.UnitResult;
 import microarch.delivery.core.domain.model.Location;
-import microarch.delivery.core.domain.model.order2.Order;
+import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.domain.model.Volume;
 
 import java.util.Objects;
@@ -21,7 +21,7 @@ public class Assignment extends BaseEntity<UUID> {
     private Status status;
 
     public static Result<Assignment, Error> createFor(Order order) {
-        return create(order.getId(), order.getCapacity(), order.getLocation());
+        return create(order.getId(), order.getVolume(), order.getLocation());
     }
 
     public static Result<Assignment, Error> create(UUID orderId, Volume volume, Location location) {

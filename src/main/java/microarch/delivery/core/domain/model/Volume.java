@@ -32,6 +32,18 @@ public class Volume extends ValueObject<Volume> {
         return Result.success(new Volume(vol + other.vol));
     }
 
+    public Result<Volume, Error> minus(Volume other) {
+        Error err = Guard.againstNull(other, "other");
+        if (err != null) {
+            return Result.failure(err);
+        }
+        err = Guard.againstLessThan(vol - other.vol, 0, "newVolume");
+        if (err != null) {
+            return Result.failure(err);
+        }
+        return Result.success(new Volume(vol - other.vol));
+    }
+
     @Override
     protected Iterable<Object> equalityComponents() {
         return components;
