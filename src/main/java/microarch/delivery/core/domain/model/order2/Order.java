@@ -1,9 +1,11 @@
-package microarch.delivery.core.domain.model;
+package microarch.delivery.core.domain.model.order2;
 
 import libs.ddd.BaseEntity;
 import libs.errs.Error;
 import libs.errs.Guard;
 import libs.errs.Result;
+import microarch.delivery.core.domain.model.Location;
+import microarch.delivery.core.domain.model.Volume;
 
 import java.util.UUID;
 
