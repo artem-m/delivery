@@ -30,6 +30,13 @@ public class Location {
         return Math.abs(x - other.x) + Math.abs(y - other.y);
     }
 
+    public boolean canReach(Location other, int steps) {
+
+        int diffX = Math.abs(this.x - other.x);
+        int diffY = Math.abs(this.y - other.y);
+        return Math.max(diffX, diffY) <= steps;
+    }
+
     @Override
     public int hashCode() {
         return 31 * x + y;
@@ -41,5 +48,10 @@ public class Location {
             return x == location.x && y == location.y;
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Location(x=" + this.x + ", y=" + this.y + ")";
     }
 }

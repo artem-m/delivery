@@ -27,6 +27,13 @@ public final class Guard {
         return null;
     }
 
+    public static Error againstNull(Object value, String paramName) {
+        if (value == null) {
+            return GeneralErrors.valueIsRequired(paramName);
+        }
+        return null;
+    }
+
     public static Error againstNullOrEmpty(Collection<?> collection, String paramName) {
         if (collection == null || collection.isEmpty()) {
             return GeneralErrors.valueIsRequired(paramName);
