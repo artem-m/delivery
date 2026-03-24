@@ -31,7 +31,6 @@ public class Location {
     }
 
     public boolean canReach(Location other, int steps) {
-
         int diffX = Math.abs(this.x - other.x);
         int diffY = Math.abs(this.y - other.y);
         return Math.max(diffX, diffY) <= steps;

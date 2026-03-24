@@ -6,8 +6,8 @@ import libs.errs.Guard;
 import libs.errs.Result;
 import libs.errs.UnitResult;
 import microarch.delivery.core.domain.model.Location;
-import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.domain.model.Volume;
+import microarch.delivery.core.domain.model.order.Order;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,6 +80,14 @@ public class Courier extends BaseEntity<UUID> {
 
     public List<Assignment> getAssignments() {
         return Collections.unmodifiableList(this.assignments);
+    }
+
+    public Location getLocation() {
+        return this.location;
+    }
+
+    public Volume getMaxVolume() {
+        return this.maxVolume;
     }
 
     static class Errors {
