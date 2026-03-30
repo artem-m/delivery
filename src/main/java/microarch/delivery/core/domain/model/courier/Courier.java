@@ -53,7 +53,7 @@ public class Courier extends BaseEntity<UUID> {
             return UnitResult.failure(assignResult.getError());
         }
         assignments.add(assignResult.getValue());
-        return order.assign();
+        return UnitResult.success();
     }
 
     public UnitResult<Error> complete(Order order) {

@@ -38,6 +38,10 @@ public class OrderDistributionServiceImpl implements OrderDistributionService {
             if (result.isFailure()) {
                 return Result.failure(result.getError());
             }
+            result = order.assign();
+            if (result.isFailure()) {
+                return Result.failure(result.getError());
+            }
             return Result.success(candidate.courier());
         }
         return Result.failure(Errors.noValidCandidates(order));
