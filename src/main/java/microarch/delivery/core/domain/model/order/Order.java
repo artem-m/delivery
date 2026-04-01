@@ -1,5 +1,6 @@
 package microarch.delivery.core.domain.model.order;
 
+import jakarta.persistence.*;
 import libs.ddd.BaseEntity;
 import libs.errs.Error;
 import libs.errs.Guard;
@@ -10,12 +11,20 @@ import microarch.delivery.core.domain.model.Volume;
 
 import java.util.UUID;
 
+@Entity(name = "orders")
 public class Order extends BaseEntity<UUID> {
 
+    @Column(name = "location")
+    @Convert(converter = Location.LocationConverter.class)
     private Location location;
+    @Column(name = "volume")
+    @Convert(converter = Volume.VolumeConverter.class)
     private Volume volume;
+    @Column(name = "status")
     private OrderStatus status;
-    // product(s)?
+
+    private Order() {
+    }
 
     private Order(UUID id, Location location, Volume capacity) {
         super(id);
@@ -69,6 +78,6 @@ public class Order extends BaseEntity<UUID> {
         static Error invalidStatus(OrderStatus src, OrderStatus dst) {
             return Error.of("order.can.not.change.status", "Can not change status from %s to %s".formatted(src, dst));
         }
-
     }
+
 }

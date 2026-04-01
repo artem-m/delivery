@@ -1,4 +1,4 @@
-package microarch.delivery.core.ports;
+package microarch.delivery.core;
 
 import microarch.delivery.DeliveryApplication;
 import org.springframework.boot.test.context.SpringBootTest;

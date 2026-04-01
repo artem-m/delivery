@@ -1,5 +1,6 @@
 package microarch.delivery.core.ports;
 
+import microarch.delivery.core.BasePgIntegrationTest;
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.Volume;
 import microarch.delivery.core.domain.model.order.Order;

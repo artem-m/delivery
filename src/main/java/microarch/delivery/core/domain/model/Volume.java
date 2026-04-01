@@ -1,5 +1,6 @@
 package microarch.delivery.core.domain.model;
 
+import jakarta.persistence.AttributeConverter;
 import libs.ddd.ValueObject;
 import libs.errs.Error;
 import libs.errs.Guard;
@@ -47,5 +48,17 @@ public class Volume extends ValueObject<Volume> {
     @Override
     protected Iterable<Object> equalityComponents() {
         return components;
+    }
+
+    public static class VolumeConverter implements AttributeConverter<Volume, Integer> {
+        @Override
+        public Integer convertToDatabaseColumn(Volume attribute) {
+            return attribute.vol;
+        }
+
+        @Override
+        public Volume convertToEntityAttribute(Integer dbData) {
+            return new Volume(dbData);
+        }
     }
 }
