@@ -33,6 +33,10 @@ public class Order extends BaseEntity<UUID> {
         return Result.success(new Order(id, location, volume));
     }
 
+    public boolean isCreated() {
+        return status == OrderStatus.Created;
+    }
+
     public UnitResult<Error> assign() {
         if (status != OrderStatus.Created) {
             return UnitResult.failure(Errors.invalidStatus(status, OrderStatus.Assigned));
