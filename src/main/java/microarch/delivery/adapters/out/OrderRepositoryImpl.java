@@ -1,12 +1,12 @@
-package microarch.delivery.core.ports;
+package microarch.delivery.adapters.out;
 
 import lombok.RequiredArgsConstructor;
 import microarch.delivery.adapters.out.postgres.OrderJpaRepository;
 import microarch.delivery.core.domain.model.order.Order;
+import microarch.delivery.core.ports.OrderRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
