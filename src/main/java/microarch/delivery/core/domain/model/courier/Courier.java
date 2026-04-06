@@ -1,5 +1,6 @@
 package microarch.delivery.core.domain.model.courier;
 
+import jakarta.persistence.*;
 import libs.ddd.BaseEntity;
 import libs.errs.Error;
 import libs.errs.Guard;
@@ -14,13 +15,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+@Entity(name = "couriers")
 public class Courier extends BaseEntity<UUID> {
     public static final int MAX_STEPS_IN_MOVE = 1;
     public static final Volume MAX_VOLUME = Volume.create(20);
+    @Column(name = "name")
     private String name;
+    @OneToMany(/* mappedBy = "orderId", */fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Assignment> assignments = new ArrayList<>();
+    @Column(name = "location")
+    @Convert(converter = Location.LocationConverter.class)
     private Location location;
+    @Column(name = "maxVolume")
+    @Convert(converter = Volume.VolumeConverter.class)
     private Volume maxVolume;
+
+    private Courier() {
+    }
 
     private Courier(String name, Location location, Volume maxVolume) {
         super(UUID.randomUUID());
@@ -88,6 +99,10 @@ public class Courier extends BaseEntity<UUID> {
 
     public Volume getMaxVolume() {
         return this.maxVolume;
+    }
+
+    public String getName() {
+        return name;
     }
 
     static class Errors {

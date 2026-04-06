@@ -1,5 +1,8 @@
 package microarch.delivery.core.domain.model.courier;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
 import libs.ddd.BaseEntity;
 import libs.errs.Error;
 import libs.errs.Guard;
@@ -12,12 +15,19 @@ import microarch.delivery.core.domain.model.Volume;
 import java.util.Objects;
 import java.util.UUID;
 
+@Entity(name = "assignments")
 public class Assignment extends BaseEntity<UUID> {
     public static final int COMPLETION_DISTANCE = 1;
 
+    @Column(name = "orderId")
     private UUID orderId;
+    @Column(name = "volume")
+    @Convert(converter = Volume.VolumeConverter.class)
     private Volume volume;
+    @Column(name = "location")
+    @Convert(converter = Location.LocationConverter.class)
     private Location location;
+    @Column(name = "status")
     private Status status;
 
     public static Result<Assignment, Error> createFor(Order order) {
@@ -31,6 +41,9 @@ public class Assignment extends BaseEntity<UUID> {
             return Result.failure(err);
         }
         return Result.success(new Assignment(orderId, volume, location));
+    }
+
+    private Assignment() {
     }
 
     private Assignment(UUID orderId, Volume volume, Location location) {

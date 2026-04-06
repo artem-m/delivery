@@ -1,5 +1,7 @@
 package microarch.delivery.core.domain.model;
 
+import jakarta.persistence.AttributeConverter;
+
 public class Location {
 
     public static final int MIN_COORD_VALUE = 1;
@@ -53,4 +55,20 @@ public class Location {
     public String toString() {
         return "Location(x=" + this.x + ", y=" + this.y + ")";
     }
+
+    public static class LocationConverter implements AttributeConverter<Location, String> {
+        private static final String DELIM = ":";
+
+        @Override
+        public String convertToDatabaseColumn(Location attribute) {
+            return attribute.x + DELIM + attribute.y;
+        }
+
+        @Override
+        public Location convertToEntityAttribute(String dbData) {
+            var data = dbData.split(DELIM);
+            return new Location(Integer.parseInt(data[0]), Integer.parseInt(data[1]));
+        }
+    }
+
 }
