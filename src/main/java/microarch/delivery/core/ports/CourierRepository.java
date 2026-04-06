@@ -1,7 +1,6 @@
 package microarch.delivery.core.ports;
 
 import microarch.delivery.core.domain.model.courier.Courier;
-import microarch.delivery.core.domain.model.order.Order;
 
 import java.util.Collection;
 import java.util.Optional;

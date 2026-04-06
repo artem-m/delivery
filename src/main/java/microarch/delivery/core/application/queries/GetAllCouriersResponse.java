@@ -1,4 +1,13 @@
 package microarch.delivery.core.application.queries;
 
-public class GetAllCouriersResponse {
+import microarch.delivery.core.domain.model.Location;
+
+import java.util.Collection;
+import java.util.UUID;
+
+public record GetAllCouriersResponse(Collection<Item> items) {
+
+    public record Item(UUID id, String name, Location location) {
+
+    }
 }

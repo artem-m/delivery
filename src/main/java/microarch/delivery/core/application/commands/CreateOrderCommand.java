@@ -1,4 +1,18 @@
 package microarch.delivery.core.application.commands;
 
-public class CreateOrderCommand {
+import libs.errs.Guard;
+
+import java.util.UUID;
+
+public record CreateOrderCommand(UUID orderId, String country, String city, String street, String house,
+        String apartment, int volume) {
+    public CreateOrderCommand {
+        var error = Guard.combine(Guard.againstNullOrEmpty(orderId, "orderId"),
+                Guard.againstNullOrEmpty(country, "country"), Guard.againstNullOrEmpty(city, "city"),
+                Guard.againstNullOrEmpty(street, "street"), Guard.againstNullOrEmpty(house, "house"),
+                Guard.againstNullOrEmpty(apartment, "apartment"), Guard.againstLessThan(volume, 1, "orderId"));
+        if (error != null) {
+            throw new IllegalArgumentException(error.getMessage());
+        }
+    }
 }

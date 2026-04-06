@@ -1,7 +1,6 @@
 package microarch.delivery.adapters.out.postgres;
 
 import microarch.delivery.core.domain.model.courier.Courier;
-import microarch.delivery.core.domain.model.order.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

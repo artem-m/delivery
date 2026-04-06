@@ -39,4 +39,9 @@ public class OrderRepositoryImpl implements OrderRepository {
     public Collection<Order> findAllAssigned() {
         return orderJpaRepository.findAllByStatus(Order.OrderStatus.Assigned);
     }
+
+    @Override
+    public Collection<Order> findAllNotCompleted() {
+        return orderJpaRepository.findAllByStatusNot(Order.OrderStatus.Completed);
+    }
 }
