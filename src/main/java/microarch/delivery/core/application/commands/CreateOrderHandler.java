@@ -21,7 +21,10 @@ public class CreateOrderHandler implements Function<CreateOrderCommand, UnitResu
     @Transactional
     public UnitResult<Error> apply(CreateOrderCommand command) {
         var result = Order.create(command.orderId(), Location.create(2, 2), Volume.create(command.volume()));
-        orderRepository.create(result.getValueOrThrow());
+        if (result.isFailure()) {
+            return UnitResult.failure(result.getError());
+        }
+        orderRepository.create(result.getValue());
         return UnitResult.success();
     }
 }

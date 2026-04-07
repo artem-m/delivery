@@ -30,6 +30,7 @@ public class AssignOrderHandler implements Function<AssignOrderCommand, UnitResu
         var assignResult = orderDistributionService.assign(order, courierRepository.findAll());
         var updatedCourier = assignResult.getValueOrThrow();
         courierRepository.update(updatedCourier);
+        orderRepository.update(order);
         return UnitResult.success();
     }
 }
