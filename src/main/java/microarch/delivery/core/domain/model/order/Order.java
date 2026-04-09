@@ -1,6 +1,8 @@
 package microarch.delivery.core.domain.model.order;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
 import libs.ddd.BaseEntity;
 import libs.errs.Error;
 import libs.errs.Guard;

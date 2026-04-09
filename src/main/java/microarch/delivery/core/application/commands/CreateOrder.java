@@ -1,4 +1,4 @@
-package microarch.delivery.core.application;
+package microarch.delivery.core.application.commands;
 
 import lombok.RequiredArgsConstructor;
 import microarch.delivery.core.domain.model.Location;
