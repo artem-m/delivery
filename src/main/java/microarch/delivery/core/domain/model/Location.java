@@ -25,6 +25,20 @@ public class Location {
         return new Location(x, y);
     }
 
+    public Location stepTo(Location dst) {
+        int dstX = Math.min(MAX_COORD_VALUE, Math.max(MIN_COORD_VALUE, dst.x > x ? x + 1 : (dst.x < x ? x - 1 : x)));
+        int dstY = Math.min(MAX_COORD_VALUE, Math.max(MIN_COORD_VALUE, dst.y > y ? y + 1 : (dst.y < y ? y - 1 : y)));
+        return new Location(dstX, dstY);
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
     public int distanceTo(Location other) {
         if (other == null) {
             throw new IllegalArgumentException("Can not calculate distance to NULL location");
