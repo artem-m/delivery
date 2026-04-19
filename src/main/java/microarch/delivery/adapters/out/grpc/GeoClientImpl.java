@@ -1,62 +1,52 @@
-package microarch.delivery.adapters.out;
+package microarch.delivery.adapters.out.grpc;
 
 import clients.geo.GeoGrpc;
 import clients.geo.GeoProto;
-import io.grpc.stub.StreamObserver;
-import lombok.RequiredArgsConstructor;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+import libs.errs.Error;
+import libs.errs.Result;
 import lombok.extern.slf4j.Slf4j;
+import microarch.delivery.ApplicationProperties;
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.ports.GeoServiceClient;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicReference;
+import javax.annotation.PreDestroy;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class GeoClientImpl implements GeoServiceClient {
 
-    private final GeoGrpc.AsyncService grpcService;
+    private final ManagedChannel channel;
+    private final GeoGrpc.GeoBlockingStub stub;
+
+    public GeoClientImpl(ApplicationProperties properties) {
+        this.channel = ManagedChannelBuilder.forAddress(properties.getGrpc().getGeoService().getHost(),
+                properties.getGrpc().getGeoService().getPort()).usePlaintext().build();
+        this.stub = GeoGrpc.newBlockingStub(channel);
+    }
+
+    @PreDestroy
+    public void stop() {
+        if (!channel.isShutdown()) {
+            channel.shutdown();
+        }
+    }
 
     @Override
-    public Location getGeoLocation(String street) {
-        var ref = new AtomicReference<Location>();
-        var latch = new CountDownLatch(1);
-        StreamObserver<GeoProto.GetGeolocationReply> responseObserver = new StreamObserver<>() {
-            @Override
-            public void onNext(GeoProto.GetGeolocationReply value) {
-                if (value.hasLocation()) {
-                    var loc = value.getLocation();
-                    var result = Location.create(loc.getX(), loc.getY());
-                    ref.set(result);
-                }
-                latch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable t) {
-            log.error("Error requesting location", t);
-                latch.countDown();
-            }
-
-            @Override
-            public void onCompleted() {
-latch.countDown();
-            }
-        };
-        grpcService.getGeolocation(
-                GeoProto.GetGeolocationRequest.newBuilder().setStreet(street).build(),
-                responseObserver);
+    public Result<Location, Error> getGeoLocation(String street) {
+        GeoProto.Location location = null;
         try {
-            latch.wait(1_000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            var response = stub.getGeolocation(GeoProto.GetGeolocationRequest.newBuilder().setStreet(street).build());
+            if (!response.hasLocation()) {
+                return Result.failure(Error.of("no.location.for.street", "No location found for street=" + street));
+            }
+            location = response.getLocation();
+        } catch (Exception e) {
+            return Result.failure(
+                    Error.of("failed.to.get.location.for.street", "Failed to get location for street=" + street));
         }
-        var result = ref.get();
-        if (result==null){
-            throw new IllegalStateException("Did not get any location for street="+street);
-        }
-        return result;
+        return Result.success(Location.create(location.getX(), location.getY()));
     }
 }
