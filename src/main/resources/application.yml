@@ -38,7 +38,7 @@ app:
     geo-service:
       host: ${GEO_SERVICE_GRPC_HOST:localhost}
       port: ${GEO_SERVICE_GRPC_PORT:5004}
-      
+
   kafka:
     baskets-events-topic: ${KAFKA_BASKETS_EVENTS_TOPIC:baskets.events}
     orders-events-topic: ${KAFKA_ORDERS_EVENTS_TOPIC:orders.events}
