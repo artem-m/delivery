@@ -1,5 +1,6 @@
 package microarch.delivery.core.application.commands;
 
+import libs.ddd.DomainEventPublisher;
 import libs.errs.Error;
 import libs.errs.Guard;
 import libs.errs.UnitResult;
@@ -9,6 +10,7 @@ import microarch.delivery.core.ports.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.function.Function;
 
 @Service
@@ -16,6 +18,7 @@ import java.util.function.Function;
 public class CompleteOrderHandler implements Function<CompleteOrderCommand, UnitResult<Error>> {
     private final OrderRepository orderRepository;
     private final CourierRepository courierRepository;
+    private final DomainEventPublisher domainEventPublisher;
 
     @Override
     @Transactional
@@ -38,6 +41,7 @@ public class CompleteOrderHandler implements Function<CompleteOrderCommand, Unit
         if (result.isFailure()) {
             return UnitResult.failure(result.getError());
         }
+        domainEventPublisher.publish(List.of(order, courier));
         orderRepository.update(order);
         courierRepository.update(courier);
         return UnitResult.success();
