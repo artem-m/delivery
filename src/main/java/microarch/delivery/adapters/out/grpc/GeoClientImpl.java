@@ -40,12 +40,11 @@ public class GeoClientImpl implements GeoServiceClient {
         try {
             var response = stub.getGeolocation(GeoProto.GetGeolocationRequest.newBuilder().setStreet(street).build());
             if (!response.hasLocation()) {
-                return Result.failure(Error.of("no.location.for.street", "No location found for street=" + street));
+                throw new IllegalStateException("No location found for street=" + street);
             }
             location = response.getLocation();
         } catch (Exception e) {
-            return Result.failure(
-                    Error.of("failed.to.get.location.for.street", "Failed to get location for street=" + street));
+            throw new IllegalStateException("Failed to get location for street=" + street, e);
         }
         return Result.success(Location.create(location.getX(), location.getY()));
     }
