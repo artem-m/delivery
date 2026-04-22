@@ -2,7 +2,6 @@ package microarch.delivery.core.domain.model.courier;
 
 import jakarta.persistence.*;
 import libs.ddd.Aggregate;
-import libs.ddd.BaseEntity;
 import libs.errs.Error;
 import libs.errs.Guard;
 import libs.errs.Result;

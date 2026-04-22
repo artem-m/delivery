@@ -5,10 +5,9 @@ import libs.ddd.DomainEvent;
 import libs.ddd.DomainEventPublisher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
+// @Component <- exclude from context
 public class DefaultDomainEventPublisher implements DomainEventPublisher {
     private final ApplicationEventPublisher publisher;
 
