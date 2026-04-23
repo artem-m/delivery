@@ -1,6 +1,7 @@
 package microarch.delivery.core.domain.model.courier;
 
 import jakarta.persistence.*;
+import libs.ddd.Aggregate;
 import libs.ddd.BaseEntity;
 import libs.errs.Error;
 import libs.errs.Guard;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "couriers")
-public class Courier extends BaseEntity<UUID> {
+public class Courier extends Aggregate<UUID> {
     public static final int MAX_STEPS_IN_MOVE = 1;
     public static final Volume MAX_VOLUME = Volume.create(20);
     @Column(name = "name")

@@ -3,6 +3,7 @@ package microarch.delivery.core.domain.model.order;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import libs.ddd.Aggregate;
 import libs.ddd.BaseEntity;
 import libs.errs.Error;
 import libs.errs.Guard;
@@ -10,11 +11,13 @@ import libs.errs.Result;
 import libs.errs.UnitResult;
 import microarch.delivery.core.domain.model.Location;
 import microarch.delivery.core.domain.model.Volume;
+import microarch.delivery.core.domain.model.order.events.OrderCompletedDomainEvent;
+import microarch.delivery.core.domain.model.order.events.OrderCreatedDomainEvent;
 
 import java.util.UUID;
 
 @Entity(name = "orders")
-public class Order extends BaseEntity<UUID> {
+public class Order extends Aggregate<UUID> {
 
     @Column(name = "location")
     @Convert(converter = Location.LocationConverter.class)
@@ -33,6 +36,7 @@ public class Order extends BaseEntity<UUID> {
         this.location = location;
         this.volume = capacity;
         this.status = OrderStatus.Created;
+        raiseDomainEvent(new OrderCreatedDomainEvent(this));
     }
 
     public static Result<Order, Error> create(UUID id, Location location, Volume volume) {
@@ -61,6 +65,7 @@ public class Order extends BaseEntity<UUID> {
             return UnitResult.failure(Errors.invalidStatus(status, OrderStatus.Completed));
         }
         status = OrderStatus.Completed;
+        raiseDomainEvent(new OrderCompletedDomainEvent(this));
         return UnitResult.success();
     }
 

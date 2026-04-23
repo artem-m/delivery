@@ -8,11 +8,11 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Getter
-public abstract class DomainEvent extends ApplicationEvent {
+public abstract class DomainEvent<T> extends ApplicationEvent {
     private final UUID eventId = UUID.randomUUID();
     private final Instant occurredOnUtc = Instant.now();
 
-    public DomainEvent(Object source) {
+    public DomainEvent(T source) {
         super(source);
     }
 
@@ -23,7 +23,7 @@ public abstract class DomainEvent extends ApplicationEvent {
 
     @JsonIgnore
     @Override
-    public Object getSource() {
-        return super.getSource();
+    public T getSource() {
+        return (T) super.getSource();
     }
 }
