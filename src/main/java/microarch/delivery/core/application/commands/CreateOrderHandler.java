@@ -32,8 +32,8 @@ public class CreateOrderHandler implements Function<CreateOrderCommand, UnitResu
         if (result.isFailure()) {
             return UnitResult.failure(result.getError());
         }
-        domainEventPublisher.publish(List.of(result.getValue()));
         orderRepository.create(result.getValue());
+        domainEventPublisher.publish(List.of(result.getValue()));
         return UnitResult.success();
     }
 }

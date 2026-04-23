@@ -41,9 +41,9 @@ public class CompleteOrderHandler implements Function<CompleteOrderCommand, Unit
         if (result.isFailure()) {
             return UnitResult.failure(result.getError());
         }
-        domainEventPublisher.publish(List.of(order, courier));
         orderRepository.update(order);
         courierRepository.update(courier);
+        domainEventPublisher.publish(List.of(order, courier));
         return UnitResult.success();
     }
 }
