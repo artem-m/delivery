@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import libs.ddd.Aggregate;
-import libs.ddd.BaseEntity;
 import libs.errs.Error;
 import libs.errs.Guard;
 import libs.errs.Result;

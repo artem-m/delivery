@@ -28,7 +28,7 @@ public class OrderEventsKafkaProducer implements OrderEventsPublisher {
         log.info("Received event={}", event);
         var payload = OrderEventsProto.OrderCompletedIntegrationEvent.newBuilder()
                 .setOrderId(event.getSource().getId().toString()).build();
-        sendToTopic( event.getSource().getId().toString(),payload);
+        sendToTopic(event.getSource().getId().toString(), payload);
     }
 
     @EventListener
@@ -36,17 +36,16 @@ public class OrderEventsKafkaProducer implements OrderEventsPublisher {
         log.info("Received event={}", event);
         var payload = OrderEventsProto.OrderCreatedIntegrationEvent.newBuilder()
                 .setOrderId(event.getSource().getId().toString()).build();
-        sendToTopic( event.getSource().getId().toString(),payload);
+        sendToTopic(event.getSource().getId().toString(), payload);
     }
 
     private void sendToTopic(String key, Object payload) throws JsonProcessingException {
-        template.send(topic, key, mapper.writeValueAsBytes(payload))
-                .whenComplete((it, throwable) -> {
-                    if (throwable != null) {
-                        log.error("Failed to send={} event", payload, throwable);
-                    } else {
-                        log.info("Event={} sent", payload);
-                    }
-                });
+        template.send(topic, key, mapper.writeValueAsBytes(payload)).whenComplete((it, throwable) -> {
+            if (throwable != null) {
+                log.error("Failed to send={} event", payload, throwable);
+            } else {
+                log.info("Event={} sent", payload);
+            }
+        });
     }
 }
